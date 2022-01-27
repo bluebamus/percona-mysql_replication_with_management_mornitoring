@@ -1,0 +1,88 @@
+version: "3"
+services:
+  db001:
+    build: ../docker/percona-mysql/
+    container_name: db001
+    hostname: db001
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+    volumes:
+      - ../volumes/db/db001/data:/var/lib/mysql
+      - ../volumes/db/db001/log:/var/log/mysql
+      - ../volumes/db/db001/conf/my.cnf:/etc/my.cnf
+    networks:
+      - mybridge
+  db002:
+    build: ../docker/percona-mysql/
+    container_name: db002
+    hostname: db002
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+    volumes:
+      - ../volumes/db/db002/data:/var/lib/mysql
+      - ../volumes/db/db002/log:/var/log/mysql
+      - ../volumes/db/db002/conf/my.cnf:/etc/my.cnf
+    networks:
+      - mybridge
+  db003:
+    build: ../docker/percona-mysql/
+    container_name: db003
+    hostname: db003
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+    volumes:
+      - ../volumes/db/db003/data:/var/lib/mysql
+      - ../volumes/db/db003/log:/var/log/mysql
+      - ../volumes/db/db003/conf/my.cnf:/etc/my.cnf
+    networks:
+      - mybridge
+  orchestrator:
+    image: openarkcode/orchestrator:latest
+    container_name: orchestrator
+    hostname: orchestrator
+    ports:
+      - "3000:3000"
+    networks:
+      - mybridge
+  proxysql:
+    image: proxysql/proxysql
+    container_name: proxysql
+    hostname: proxysql
+    ports:
+      - "16032:6032"
+      - "16033:6033"
+    volumes:
+      - ../volumes/db/proxysql/data:/var/lib/proxysql
+      - ../volumes/db/proxysql/conf/proxysql.cnf:/etc/proxysql.cnf
+    networks:
+      - mybridge
+  prom001:
+    image: prom/prometheus-linux-amd64
+    container_name: prom001
+    hostname: prom001
+    ports:
+      - "9090:9090"
+    volumes:
+      - ../volumes/db/prom001/data:/data
+      - ../volumes/db/prom001/conf:/etc/prometheus
+    networks:
+      - mybridge
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    hostname: grafana
+    ports:
+      - "13000:3000"
+    networks:
+      - mybridge
+
+networks:
+  mybridge:
+    #external: true
+    driver: bridge
