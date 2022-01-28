@@ -48,6 +48,8 @@ services:
     hostname: orchestrator
     ports:
       - "3000:3000"
+    volumes:
+      - ../volumes/management/orchestrator/conf/orchestrator.conf.json:/etc/orchestrator.conf.json
     networks:
       - mybridge
   proxysql:
@@ -58,19 +60,19 @@ services:
       - "16032:6032"
       - "16033:6033"
     volumes:
-      - ../volumes/db/proxysql/data:/var/lib/proxysql
-      - ../volumes/db/proxysql/conf/proxysql.cnf:/etc/proxysql.cnf
+      - ../volumes/management/proxysql/data:/var/lib/proxysql
+      - ../volumes/management/proxysql/conf/proxysql.cnf:/etc/proxysql.cnf
     networks:
       - mybridge
-  prom001:
+  prometheus:
     image: prom/prometheus-linux-amd64
-    container_name: prom001
-    hostname: prom001
+    container_name: prometheus
+    hostname: prometheus
     ports:
       - "9090:9090"
     volumes:
-      - ../volumes/db/prom001/data:/data
-      - ../volumes/db/prom001/conf:/etc/prometheus
+      - ../volumes/mornitoring/prometheus/data:/data
+      - ../volumes/mornitoring/prometheus/conf:/etc/prometheus
     networks:
       - mybridge
   grafana:
