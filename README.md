@@ -4,7 +4,7 @@ It supports percona mysql replication and management with orchestrator, sqlproxy
 # Notice
 ### Docker-compose network
 - 'Slave_IO_Running' goes into 'connecting' state due to network connectivity issues when running multiple database containers on one server. 
-- If you connect to a any slave container and enter 'mysql -h<master server> -urepl -prepl' once, 'Slave_IO_Running' becomes yes.
+- If you connect to a any slave container and enter 'mysql -h<master server> -urepl -prepl' once and execute any command as 'show tables;' than 'Slave_IO_Running' becomes yes.
 ### If you want to create docker bridge network before running docker-compose
 - use docker command
 ``` shell

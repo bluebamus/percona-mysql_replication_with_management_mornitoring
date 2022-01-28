@@ -8,6 +8,7 @@ services:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: 'root'
+      TZ: "Asia/Seoul"
     volumes:
       - ../volumes/db/db001/data:/var/lib/mysql
       - ../volumes/db/db001/log:/var/log/mysql
@@ -22,6 +23,7 @@ services:
       - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: 'root'
+      TZ: "Asia/Seoul"
     volumes:
       - ../volumes/db/db002/data:/var/lib/mysql
       - ../volumes/db/db002/log:/var/log/mysql
@@ -36,6 +38,7 @@ services:
       - "3308:3306"
     environment:
       MYSQL_ROOT_PASSWORD: 'root'
+      TZ: "Asia/Seoul"
     volumes:
       - ../volumes/db/db003/data:/var/lib/mysql
       - ../volumes/db/db003/log:/var/log/mysql
@@ -48,6 +51,8 @@ services:
     hostname: orchestrator
     ports:
       - "3000:3000"
+    environment:      
+      TZ: "Asia/Seoul"
     volumes:
       - ../volumes/management/orchestrator/conf/orchestrator.conf.json:/etc/orchestrator.conf.json
     networks:
@@ -59,6 +64,8 @@ services:
     ports:
       - "16032:6032"
       - "16033:6033"
+    environment:      
+      TZ: "Asia/Seoul"
     volumes:
       - ../volumes/management/proxysql/data:/var/lib/proxysql
       - ../volumes/management/proxysql/conf/proxysql.cnf:/etc/proxysql.cnf
@@ -70,6 +77,8 @@ services:
     hostname: prometheus
     ports:
       - "9090:9090"
+    environment:      
+      TZ: "Asia/Seoul"
     volumes:
       - ../volumes/mornitoring/prometheus/data:/data
       - ../volumes/mornitoring/prometheus/conf:/etc/prometheus
@@ -81,6 +90,8 @@ services:
     hostname: grafana
     ports:
       - "13000:3000"
+    environment:      
+      TZ: "Asia/Seoul"
     networks:
       - mybridge
 
