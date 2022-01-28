@@ -1,2 +1,6 @@
 # specify a folder with slash in the end
 # ignore all files in any directory named temp
+volumes/db/db00*/data/
+volumes/db/db00*/conf/
+volumes/management/proxysql/data/
+volumes/mornitoring/prometheus/data/
