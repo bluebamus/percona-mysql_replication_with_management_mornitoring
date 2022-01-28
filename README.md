@@ -93,6 +93,9 @@ GRANT SELECT ON mysql.slave_master_info TO orc_client_user@'%'
 3. go webbrowger
 - http://{docker host ip}:3000/web/clusters
   - ex)http://localhost:3000/web/clusters   
-<img src="doc/readme/images/orchestrator-discover.png", align="left" height="400x" width="300px" title="Init setting"></img> 
+![orchestrator-discover](https://user-images.githubusercontent.com/24231446/151568247-c8af3453-5849-4a29-a512-1099dca2b71c.png)
+4. check board   
+![board1](https://user-images.githubusercontent.com/24231446/151568706-40bc7949-f961-4e49-af76-73ce34191f8a.png)
+![board2](https://user-images.githubusercontent.com/24231446/151568719-2018ae12-4c7e-4b73-b1f5-0f36c4dc2af4.png)
 
 # Reference
