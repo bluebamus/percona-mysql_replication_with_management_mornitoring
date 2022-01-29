@@ -29,12 +29,12 @@ ${EXEC_MASTER} "CREATE USER orc_client_user@'%' IDENTIFIED BY 'orc_client_passwo
 ${EXEC_MASTER} "GRANT SUPER, PROCESS, REPLICATION SLAVE, RELOAD ON *.* TO orc_client_user@'%'" 2>&1 | grep -v "Using a password"
 ${EXEC_MASTER} "GRANT SELECT ON mysql.slave_master_info TO orc_client_user@'%'" 2>&1 | grep -v "Using a password"
 
-## For ProxySQL
-${EXEC_MASTER} "CREATE DATABASE testdb DEFAULT CHARACTER SET=utf8" 2>&1 | grep -v "Using a password"
-${EXEC_MASTER} "CREATE USER appuser@'%' IDENTIFIED BY 'apppass'" 2>&1 | grep -v "Using a password"
-${EXEC_MASTER} "GRANT SELECT, INSERT, UPDATE, DELETE ON testdb.* TO appuser@'%'" 2>&1 | grep -v "Using a password"
-${EXEC_MASTER} "CREATE USER monitor@'%' IDENTIFIED BY 'monitor'" 2>&1 | grep -v "Using a password"
-${EXEC_MASTER} "GRANT REPLICATION CLIENT ON *.* TO monitor@'%'" 2>&1 | grep -v "Using a password"
+# ## For ProxySQL test -> moved to test folder
+# ${EXEC_MASTER} "CREATE DATABASE testdb DEFAULT CHARACTER SET=utf8" 2>&1 | grep -v "Using a password"
+# ${EXEC_MASTER} "CREATE USER appuser@'%' IDENTIFIED BY 'apppass'" 2>&1 | grep -v "Using a password"
+# ${EXEC_MASTER} "GRANT SELECT, INSERT, UPDATE, DELETE ON testdb.* TO appuser@'%'" 2>&1 | grep -v "Using a password"
+# ${EXEC_MASTER} "CREATE USER monitor@'%' IDENTIFIED BY 'monitor'" 2>&1 | grep -v "Using a password"
+# ${EXEC_MASTER} "GRANT REPLICATION CLIENT ON *.* TO monitor@'%'" 2>&1 | grep -v "Using a password"
 
 ## For Prometheus
 ${EXEC_MASTER} "CREATE USER 'exporter'@'localhost' IDENTIFIED BY 'exporter123' WITH MAX_USER_CONNECTIONS 3" 2>&1 | grep -v "Using a password"
@@ -46,6 +46,8 @@ sudo docker exec ${SLAVE01_NODE} sh /opt/exporters/node_exporter/start_node_expo
 sudo docker exec ${SLAVE01_NODE} sh /opt/exporters/mysqld_exporter/start_mysqld_exporter.sh
 sudo docker exec ${SLAVE02_NODE} sh /opt/exporters/node_exporter/start_node_exporter.sh
 sudo docker exec ${SLAVE02_NODE} sh /opt/exporters/mysqld_exporter/start_mysqld_exporter.sh
+
+## For ProxySQL
 
 EXEC_PROXY="mysql -h127.0.0.1 -P16032 -uradmin -pradmin -e "
 

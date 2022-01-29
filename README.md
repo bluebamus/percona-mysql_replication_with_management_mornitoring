@@ -4,7 +4,7 @@ It supports percona mysql replication and management with orchestrator, sqlproxy
 # Notice
 ### Docker-compose network
 - 'Slave_IO_Running' goes into 'connecting' state due to network connectivity issues when running multiple database containers on one server. 
-- If you connect to a any slave container and enter 'mysql -h<master server> -urepl -prepl' once and execute any command as 'show tables;' than 'Slave_IO_Running' becomes yes.
+- If you connect to a any slave container and enter 'mysql -h<master server> -urepl -prepl' once than the parameter value of 'Slave_IO_Running' becomes yes.
 ### If you want to create docker bridge network before running docker-compose
 - use docker command
 ``` shell
@@ -31,7 +31,7 @@ ex) docker network create --driver bridge mybridge
   ``` shell
   docker network ls -f, --format, --no-trunc, -q
   docker network create <option> network
-    ex) docker network create --driver=bridge tmp_network
+    ex) docker network create --driver=bridge mybridge
   docker network connect <option> network container name
   docker network disconnect <option> network container name
   docker network inspect <option> network name
@@ -98,4 +98,51 @@ GRANT SELECT ON mysql.slave_master_info TO orc_client_user@'%'
 ![board1](https://user-images.githubusercontent.com/24231446/151568706-40bc7949-f961-4e49-af76-73ce34191f8a.png)
 ![board2](https://user-images.githubusercontent.com/24231446/151568719-2018ae12-4c7e-4b73-b1f5-0f36c4dc2af4.png)
 
+## Orchestrator
+1. connect ProxySQL
+``` shell
+mysql -h127.0.0.1 -P16032 -uradmin -pradmin --prompt "ProxySQL Admin>"
+ProxySQL Admin> INSERT INTO mysql_servers(hostgroup_id, hostname, port) VALUES (10, 'db001', 3306)
+ProxySQL Admin> INSERT INTO mysql_servers(hostgroup_id, hostname, port) VALUES (20, 'db001', 3306)
+ProxySQL Admin> INSERT INTO mysql_servers(hostgroup_id, hostname, port) VALUES (20, 'db002', 3306)
+ProxySQL Admin> INSERT INTO mysql_servers(hostgroup_id, hostname, port) VALUES (20, 'db003', 3306)
+ProxySQL Admin> INSERT INTO mysql_replication_hostgroups VALUES (10,20,'read_only','')
+ProxySQL Admin> LOAD MYSQL SERVERS TO RUNTIME
+ProxySQL Admin> SAVE MYSQL SERVERS TO DISK
+
+ProxySQL Admin> INSERT INTO mysql_users(username,password,default_hostgroup,transaction_persistent) VALUES ('appuser','apppass',10,0)
+ProxySQL Admin> LOAD MYSQL USERS TO RUNTIME
+ProxySQL Admin> SAVE MYSQL USERS TO DISK
+
+ProxySQL Admin> INSERT INTO mysql_query_rules(rule_id,active,match_pattern,destination_hostgroup) VALUES (1,1,'^SELECT.*FOR UPDATE$',10)
+ProxySQL Admin> INSERT INTO mysql_query_rules(rule_id,active,match_pattern,destination_hostgroup) VALUES (2,1,'^SELECT',20)
+ProxySQL Admin> LOAD MYSQL USERS TO RUNTIME
+ProxySQL Admin> SAVE MYSQL USERS TO DISK
+```
+2. create test database at master database
+``` mysql
+mysql> create database testdb default character set utf8;
+mysql> create table testdb.insert_test(hostname varchar(5) not null, insert_time datetime not null);
+
+mysql> create user appuser@'%' identified by 'apppass';
+mysql> grant select, insert, update, delete on testdb.* to appuser@'%';
+
+mysql> create user 'monitor'@'%' identified by 'monitor';
+mysql> grant REPLICATION CLIENT on *.* to 'monitor'@'%';
+
+mysql> flush privileges;
+```
+3. test
+``` shell
+mysql -h127.0.0.1 -P16033 -uappuser -papppass -N -e "select @@hostname,now()" 2>&1| grep -v "Warning"
+
+mysql -uappuser -papppass -h127.0.0.1 -P16033 -N -e "insert into testdb.insert_test select @@hostname,now()" 2>&1| grep -v "Warning"  
+```
 # Reference
+- [인프런 - 따라하며 배우는 MySQL on Docker 학습 정리 - Master/Slave Replication 구성](https://devspoon.tistory.com/19)
+- [인프런 - 따라하며 배우는 MySQL on Docker 학습 정리 - Orchestrator를 이용한 HA(High Availability) 구성 방법 (1)](https://devspoon.tistory.com/20)
+- [인프런 - 따라하며 배우는 MySQL on Docker 학습 정리 - Orchestrator를 이용한 HA(High Availability) HA 매뉴얼 테스트[수동 관리] (2)](https://devspoon.tistory.com/21)
+- [인프런 - 따라하며 배우는 MySQL on Docker 학습 정리 - Orchestrator를 이용한 HA(High Availability) HA 매뉴얼 테스트[자동 복구] (3)](https://devspoon.tistory.com/22)
+- [인프런 - 따라하며 배우는 MySQL on Docker 학습 정리 - ProxySQL을 이용한 Proxy Layer 구축 (1)](https://devspoon.tistory.com/23)
+- [인프런 - 따라하며 배우는 MySQL on Docker 학습 정리 - ProxySQL 실습 (2)](https://devspoon.tistory.com/24)
+- [인프런 - 따라하며 배우는 MySQL on Docker 학습 정리 - ProxySQL 실습 : Insert (3)](https://devspoon.tistory.com/25)

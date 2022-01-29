@@ -1,4 +1,5 @@
 datadir="/var/lib/proxysql"
+errorlog="/var/lib/proxysql/proxysql.log"
 admin_variables=
 {
     admin_credentials="admin:admin;radmin:radmin"
@@ -29,6 +30,7 @@ mysql_variables=
     commands_stats=true
     sessions_sort=true
     connect_retries_on_failure=10
+    admin-hash_passwords=false
 }
 
 
