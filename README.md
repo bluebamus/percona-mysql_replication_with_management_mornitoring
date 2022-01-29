@@ -98,7 +98,7 @@ GRANT SELECT ON mysql.slave_master_info TO orc_client_user@'%'
 ![board1](https://user-images.githubusercontent.com/24231446/151568706-40bc7949-f961-4e49-af76-73ce34191f8a.png)
 ![board2](https://user-images.githubusercontent.com/24231446/151568719-2018ae12-4c7e-4b73-b1f5-0f36c4dc2af4.png)
 
-## Orchestrator
+## ProxySQL
 1. connect ProxySQL
 ``` shell
 mysql -h127.0.0.1 -P16032 -uradmin -pradmin --prompt "ProxySQL Admin>"
