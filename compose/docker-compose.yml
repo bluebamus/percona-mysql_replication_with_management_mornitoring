@@ -71,29 +71,29 @@ services:
       - ../volumes/management/proxysql/conf/proxysql.cnf:/etc/proxysql.cnf      
     networks:
       - mybridge
-  # prometheus:
-  #   image: prom/prometheus-linux-amd64
-  #   container_name: prometheus
-  #   hostname: prometheus
-  #   ports:
-  #     - "9090:9090"
-  #   environment:      
-  #     TZ: "Asia/Seoul"
-  #   volumes:
-  #     - ../volumes/mornitoring/prometheus/data:/data
-  #     - ../volumes/mornitoring/prometheus/conf:/etc/prometheus
-  #   networks:
-  #     - mybridge
-  # grafana:
-  #   image: grafana/grafana
-  #   container_name: grafana
-  #   hostname: grafana
-  #   ports:
-  #     - "13000:3000"
-  #   environment:      
-  #     TZ: "Asia/Seoul"
-  #   networks:
-  #     - mybridge
+  prometheus:
+    image: prom/prometheus-linux-amd64
+    container_name: prometheus
+    hostname: prometheus
+    ports:
+      - "9090:9090"
+    environment:      
+      TZ: "Asia/Seoul"
+    volumes:
+      - ../volumes/mornitoring/prometheus/data:/data
+      - ../volumes/mornitoring/prometheus/conf:/etc/prometheus
+    networks:
+      - mybridge
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    hostname: grafana
+    ports:
+      - "13000:3000"
+    environment:      
+      TZ: "Asia/Seoul"
+    networks:
+      - mybridge
 
 networks:
   mybridge:

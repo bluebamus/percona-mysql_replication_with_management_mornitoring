@@ -51,24 +51,24 @@ sudo docker exec ${SLAVE02_NODE} sh /opt/exporters/mysqld_exporter/start_mysqld_
 
 EXEC_PROXY="mysql -h127.0.0.1 -P16032 -uradmin -pradmin -e "
 
-${EXEC_PROXY} "INSERT INTO mysql_servers(hostgroup_id, hostname, port) VALUES (10, 'db001', 3306)" 2>&1 | grep -v "Using a password"
-${EXEC_PROXY} "INSERT INTO mysql_servers(hostgroup_id, hostname, port) VALUES (20, 'db001', 3306)" 2>&1 | grep -v "Using a password"
-${EXEC_PROXY} "INSERT INTO mysql_servers(hostgroup_id, hostname, port) VALUES (20, 'db002', 3306)" 2>&1 | grep -v "Using a password"
-${EXEC_PROXY} "INSERT INTO mysql_servers(hostgroup_id, hostname, port) VALUES (20, 'db003', 3306)" 2>&1 | grep -v "Using a password"
-${EXEC_PROXY} "INSERT INTO mysql_replication_hostgroups VALUES (10,20,'read_only','')" 2>&1 | grep -v "Using a password"
-${EXEC_PROXY} "LOAD MYSQL SERVERS TO RUNTIME" 2>&1 | grep -v "Using a password"
-${EXEC_PROXY} "SAVE MYSQL SERVERS TO DISK" 2>&1 | grep -v "Using a password"
+# ${EXEC_PROXY} "INSERT INTO mysql_servers(hostgroup_id, hostname, port) VALUES (10, 'db001', 3306)" 2>&1 | grep -v "Using a password"
+# ${EXEC_PROXY} "INSERT INTO mysql_servers(hostgroup_id, hostname, port) VALUES (20, 'db001', 3306)" 2>&1 | grep -v "Using a password"
+# ${EXEC_PROXY} "INSERT INTO mysql_servers(hostgroup_id, hostname, port) VALUES (20, 'db002', 3306)" 2>&1 | grep -v "Using a password"
+# ${EXEC_PROXY} "INSERT INTO mysql_servers(hostgroup_id, hostname, port) VALUES (20, 'db003', 3306)" 2>&1 | grep -v "Using a password"
+# ${EXEC_PROXY} "INSERT INTO mysql_replication_hostgroups VALUES (10,20,'read_only','')" 2>&1 | grep -v "Using a password"
+# ${EXEC_PROXY} "LOAD MYSQL SERVERS TO RUNTIME" 2>&1 | grep -v "Using a password"
+# ${EXEC_PROXY} "SAVE MYSQL SERVERS TO DISK" 2>&1 | grep -v "Using a password"
 
-${EXEC_PROXY} "INSERT INTO mysql_users(username,password,default_hostgroup,transaction_persistent)
-               VALUES ('appuser','apppass',10,0)" 2>&1 | grep -v "Using a password"
-${EXEC_PROXY} "LOAD MYSQL USERS TO RUNTIME" 2>&1 | grep -v "Using a password"
-${EXEC_PROXY} "SAVE MYSQL USERS TO DISK" 2>&1 | grep -v "Using a password"
+# ${EXEC_PROXY} "INSERT INTO mysql_users(username,password,default_hostgroup,transaction_persistent)
+#                VALUES ('appuser','apppass',10,0)" 2>&1 | grep -v "Using a password"
+# ${EXEC_PROXY} "LOAD MYSQL USERS TO RUNTIME" 2>&1 | grep -v "Using a password"
+# ${EXEC_PROXY} "SAVE MYSQL USERS TO DISK" 2>&1 | grep -v "Using a password"
 
-${EXEC_PROXY} "INSERT INTO mysql_query_rules(rule_id,active,match_pattern,destination_hostgroup)
-               VALUES (1,1,'^SELECT.*FOR UPDATE$',10)" 2>&1 | grep -v "Using a password"
-${EXEC_PROXY} "INSERT INTO mysql_query_rules(rule_id,active,match_pattern,destination_hostgroup)
-               VALUES (2,1,'^SELECT',20)" 2>&1 | grep -v "Using a password"
-${EXEC_PROXY} "LOAD MYSQL QUERY RULES TO RUNTIME" 2>&1 | grep -v "Using a password"
-${EXEC_PROXY} "SAVE MYSQL QUERY RULES TO DISK" 2>&1 | grep -v "Using a password"
+# ${EXEC_PROXY} "INSERT INTO mysql_query_rules(rule_id,active,match_pattern,destination_hostgroup)
+#                VALUES (1,1,'^SELECT.*FOR UPDATE$',10)" 2>&1 | grep -v "Using a password"
+# ${EXEC_PROXY} "INSERT INTO mysql_query_rules(rule_id,active,match_pattern,destination_hostgroup)
+#                VALUES (2,1,'^SELECT',20)" 2>&1 | grep -v "Using a password"
+# ${EXEC_PROXY} "LOAD MYSQL QUERY RULES TO RUNTIME" 2>&1 | grep -v "Using a password"
+# ${EXEC_PROXY} "SAVE MYSQL QUERY RULES TO DISK" 2>&1 | grep -v "Using a password"
 
 

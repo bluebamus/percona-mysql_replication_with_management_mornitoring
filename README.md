@@ -98,7 +98,7 @@ GRANT SELECT ON mysql.slave_master_info TO orc_client_user@'%'
 ![board1](https://user-images.githubusercontent.com/24231446/151568706-40bc7949-f961-4e49-af76-73ce34191f8a.png)
 ![board2](https://user-images.githubusercontent.com/24231446/151568719-2018ae12-4c7e-4b73-b1f5-0f36c4dc2af4.png)
 
-## ProxySQL
+## Orchestrator
 1. connect ProxySQL
 ``` shell
 mysql -h127.0.0.1 -P16032 -uradmin -pradmin --prompt "ProxySQL Admin>"
@@ -138,6 +138,61 @@ mysql -h127.0.0.1 -P16033 -uappuser -papppass -N -e "select @@hostname,now()" 2>
 
 mysql -uappuser -papppass -h127.0.0.1 -P16033 -N -e "insert into testdb.insert_test select @@hostname,now()" 2>&1| grep -v "Warning"  
 ```
+## Prometheus
+1.prometheus.yml path
+   - volumes/mornitoring/prometheus/conf/prometheus.yml
+2. query setting at master
+   ``` mysql
+   docker exec -it -uroot -proot db001 bash
+   mysql -uroop -proot
+
+   mysql> create user 'exporter'@'localhost' identified by 'exporter123' with MAX_USER_CONNECTIONS 3;
+   mysql> grant process, replication client, select on *.* to 'exporter'@'localhost';
+   ```
+3. docker command
+    ``` docker
+    docker exec db001 sh /opt/exporters/node_exporter/start_node_exporter.sh
+    docker exec db001 sh /opt/exporters/mysqld_exporter/start_mysqld_exporter.sh
+    docker exec db002 sh /opt/exporters/node_exporter/start_node_exporter.sh
+    docker exec db002 sh /opt/exporters/mysqld_exporter/start_mysqld_exporter.sh
+    docker exec db003 sh /opt/exporters/node_exporter/start_node_exporter.sh
+    docker exec db003 sh /opt/exporters/mysqld_exporter/start_mysqld_exporter.sh
+    ```
+4. prometheus setting by web 
+    - http://{docker host ip}:9090/graph
+      - ex) http://localhost:9090/graph
+    - excute 'up'   
+    ![up](https://user-images.githubusercontent.com/24231446/151668301-cd5103ef-89c4-481a-992f-e00ee3a4c833.PNG)    
+## Grafana
+1. grafana setting by web
+    - http://{docker host ip}:13000/
+      - default account : admin/admin
+      - ex)http://localhost:13000/
+2. set data source
+    - it's in option menu at side bar   
+    ![grafana_data_sources](https://user-images.githubusercontent.com/24231446/151668520-bd78f8a7-9103-4591-92b7-c285eea99b4e.PNG)
+    - add data source    
+    ![1  add_data_source](https://user-images.githubusercontent.com/24231446/151668725-99ddf487-3a8b-47ce-8e02-f250a7896e09.PNG)
+    - select    
+    ![2  select_pro](https://user-images.githubusercontent.com/24231446/151668734-fdfe8b7d-acd8-4b96-9e3c-3ab2152a875a.PNG)
+    - update information    
+    ![3  update_info](https://user-images.githubusercontent.com/24231446/151668739-1f6f2bcd-3ef4-4394-8a96-8b78c2452a46.PNG)
+    - save and test    
+    ![4  save](https://user-images.githubusercontent.com/24231446/151668741-aebc2453-dc6c-47a8-886a-efbf1b1173b6.PNG)
+    
+3. download dashboard 
+    - [github](https://github.com/percona/grafana-dashboards/tree/master/dashboards) : https://github.com/percona/grafana-dashboards/tree/master/dashboards
+    - download MySQL_Overview.json
+    - import    
+    ![import](https://user-images.githubusercontent.com/24231446/151669044-9c4eb26e-459f-4985-830b-2cbbacd92359.PNG)
+    - upload json file    
+    ![upload_form](https://user-images.githubusercontent.com/24231446/151669185-a46e4a44-7db6-4c8e-b12b-a7d75d91823f.PNG)
+    - uploaded    
+    ![uploaded](https://user-images.githubusercontent.com/24231446/151669189-b81626bd-cd4f-4ea9-9a0d-46d05d07a6a7.PNG)
+    - finish
+    ![dashboard](https://user-images.githubusercontent.com/24231446/151669270-ff929c9b-4f02-4a59-9f4c-e18c05f50db1.PNG)
+
+
 # Reference
 - [인프런 - 따라하며 배우는 MySQL on Docker 학습 정리 - Master/Slave Replication 구성](https://devspoon.tistory.com/19)
 - [인프런 - 따라하며 배우는 MySQL on Docker 학습 정리 - Orchestrator를 이용한 HA(High Availability) 구성 방법 (1)](https://devspoon.tistory.com/20)

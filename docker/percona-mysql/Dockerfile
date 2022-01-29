@@ -81,6 +81,8 @@ COPY ["start_node_exporter.sh", \
       "start_mysqld_exporter.sh", \
       ".my.cnf","/tmp/"]
 
+RUN chmod 777 /tmp/*
+
 RUN yum install -y perl.x86_64 \
     libaio.x86_64 \
     numactl-libs.x86_64 \
